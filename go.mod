@@ -1,4 +1,4 @@
-module investapi
+module github.com/FerestGo/investAPI
 
 go 1.16
 
