@@ -1,0 +1,345 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "orders.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "OrdersStreamService"
+    },
+    {
+      "name": "OrdersService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CancelOrderResponse": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "Результат отмены торгового поручения."
+    },
+    "v1GetOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1OrderState"
+          }
+        }
+      },
+      "description": "Список активных торговых поручений."
+    },
+    "v1MoneyValue": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "type": "string",
+          "title": "строковый ISO-код валюты"
+        },
+        "units": {
+          "type": "string",
+          "format": "int64",
+          "title": "целая часть суммы, может быть отрицательным числом"
+        },
+        "nano": {
+          "type": "integer",
+          "format": "int32",
+          "title": "дробная часть суммы, может быть отрицательным числом"
+        }
+      },
+      "title": "Денежная сумма в определенной валюте"
+    },
+    "v1OrderDirection": {
+      "type": "string",
+      "enum": [
+        "ORDER_DIRECTION_UNSPECIFIED",
+        "ORDER_DIRECTION_BUY",
+        "ORDER_DIRECTION_SELL"
+      ],
+      "default": "ORDER_DIRECTION_UNSPECIFIED",
+      "title": "Направление операции"
+    },
+    "v1OrderExecutionReportStatus": {
+      "type": "string",
+      "enum": [
+        "EXECUTION_REPORT_STATUS_UNSPECIFIED",
+        "EXECUTION_REPORT_STATUS_FILL",
+        "EXECUTION_REPORT_STATUS_REJECTED",
+        "EXECUTION_REPORT_STATUS_CANCELLED",
+        "EXECUTION_REPORT_STATUS_NEW",
+        "EXECUTION_REPORT_STATUS_PARTIALLYFILL"
+      ],
+      "default": "EXECUTION_REPORT_STATUS_UNSPECIFIED",
+      "title": "Текущий статус заявки (поручения)"
+    },
+    "v1OrderStage": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64"
+        },
+        "tradeId": {
+          "type": "string"
+        }
+      },
+      "description": "Сделки в рамках торгового поручения."
+    },
+    "v1OrderState": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string"
+        },
+        "executionReportStatus": {
+          "$ref": "#/definitions/v1OrderExecutionReportStatus"
+        },
+        "lotsRequested": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lotsExecuted": {
+          "type": "string",
+          "format": "int64"
+        },
+        "initialOrderPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "executedOrderPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "totalOrderAmount": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "averagePositionPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "initialCommission": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "executedCommission": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "figi": {
+          "type": "string"
+        },
+        "direction": {
+          "$ref": "#/definitions/v1OrderDirection"
+        },
+        "initialSecurityPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1OrderStage"
+          }
+        },
+        "serviceCommission": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "orderType": {
+          "$ref": "#/definitions/v1OrderType"
+        },
+        "orderDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "Информация о торговом поручении."
+    },
+    "v1OrderTrade": {
+      "type": "object",
+      "properties": {
+        "dateTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "price": {
+          "$ref": "#/definitions/v1Quotation"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "description": "Информация о сделке."
+    },
+    "v1OrderTrades": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "direction": {
+          "$ref": "#/definitions/v1OrderDirection"
+        },
+        "figi": {
+          "type": "string"
+        },
+        "trades": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1OrderTrade"
+          }
+        }
+      },
+      "description": "Информация об исполнении торгового поручения."
+    },
+    "v1OrderType": {
+      "type": "string",
+      "enum": [
+        "ORDER_TYPE_UNSPECIFIED",
+        "ORDER_TYPE_LIMIT",
+        "ORDER_TYPE_MARKET"
+      ],
+      "default": "ORDER_TYPE_UNSPECIFIED",
+      "title": "Тип заявки"
+    },
+    "v1Ping": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Время проверки."
+        }
+      },
+      "description": "Проверка активности стрима."
+    },
+    "v1PostOrderResponse": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string"
+        },
+        "executionReportStatus": {
+          "$ref": "#/definitions/v1OrderExecutionReportStatus"
+        },
+        "lotsRequested": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lotsExecuted": {
+          "type": "string",
+          "format": "int64"
+        },
+        "initialOrderPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "executedOrderPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "totalOrderAmount": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "initialCommission": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "executedCommission": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "aciValue": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "figi": {
+          "type": "string"
+        },
+        "direction": {
+          "$ref": "#/definitions/v1OrderDirection"
+        },
+        "initialSecurityPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "orderType": {
+          "$ref": "#/definitions/v1OrderType"
+        },
+        "message": {
+          "type": "string"
+        },
+        "initialOrderPricePt": {
+          "$ref": "#/definitions/v1Quotation"
+        }
+      },
+      "description": "Информация о выставлении поручения."
+    },
+    "v1Quotation": {
+      "type": "object",
+      "properties": {
+        "units": {
+          "type": "string",
+          "format": "int64",
+          "title": "целая часть суммы, может быть отрицательным числом"
+        },
+        "nano": {
+          "type": "integer",
+          "format": "int32",
+          "title": "дробная часть суммы, может быть отрицательным числом"
+        }
+      },
+      "title": "Котировка - денежная сумма без указания валюты"
+    },
+    "v1TradesStreamResponse": {
+      "type": "object",
+      "properties": {
+        "orderTrades": {
+          "$ref": "#/definitions/v1OrderTrades"
+        },
+        "ping": {
+          "$ref": "#/definitions/v1Ping"
+        }
+      },
+      "description": "Информация о торговых поручениях."
+    }
+  }
+}

@@ -1,0 +1,635 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "sandbox.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "SandboxService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AccessLevel": {
+      "type": "string",
+      "enum": [
+        "ACCOUNT_ACCESS_LEVEL_UNSPECIFIED",
+        "ACCOUNT_ACCESS_LEVEL_FULL_ACCESS",
+        "ACCOUNT_ACCESS_LEVEL_READ_ONLY",
+        "ACCOUNT_ACCESS_LEVEL_NO_ACCESS"
+      ],
+      "default": "ACCOUNT_ACCESS_LEVEL_UNSPECIFIED",
+      "description": "Уровень доступа к счёту."
+    },
+    "v1Account": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Идентификатор счёта."
+        },
+        "type": {
+          "$ref": "#/definitions/v1AccountType",
+          "description": "Тип счёта."
+        },
+        "name": {
+          "type": "string",
+          "description": "Название счёта."
+        },
+        "status": {
+          "$ref": "#/definitions/v1AccountStatus",
+          "description": "Статус счёта."
+        },
+        "openedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Дата открытия счёта в часовом поясе UTC."
+        },
+        "closedDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Дата закрытия счёта в часовом поясе UTC."
+        },
+        "accessLevel": {
+          "$ref": "#/definitions/v1AccessLevel",
+          "description": "Уровень доступа к текущему счёту (определяется токеном)."
+        }
+      },
+      "description": "Информация о счёте."
+    },
+    "v1AccountStatus": {
+      "type": "string",
+      "enum": [
+        "ACCOUNT_STATUS_UNSPECIFIED",
+        "ACCOUNT_STATUS_NEW",
+        "ACCOUNT_STATUS_OPEN",
+        "ACCOUNT_STATUS_CLOSED"
+      ],
+      "default": "ACCOUNT_STATUS_UNSPECIFIED",
+      "description": "Статус счёта."
+    },
+    "v1AccountType": {
+      "type": "string",
+      "enum": [
+        "ACCOUNT_TYPE_UNSPECIFIED",
+        "ACCOUNT_TYPE_TINKOFF",
+        "ACCOUNT_TYPE_TINKOFF_IIS",
+        "ACCOUNT_TYPE_INVEST_BOX"
+      ],
+      "default": "ACCOUNT_TYPE_UNSPECIFIED",
+      "description": "Тип счёта."
+    },
+    "v1CancelOrderResponse": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "Результат отмены торгового поручения."
+    },
+    "v1CloseSandboxAccountResponse": {
+      "type": "object",
+      "description": "Результат закрытия счёта в песочнице."
+    },
+    "v1GetAccountsResponse": {
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Account"
+          },
+          "description": "Массив счетов клиента."
+        }
+      },
+      "description": "Список счетов пользователя."
+    },
+    "v1GetOrdersResponse": {
+      "type": "object",
+      "properties": {
+        "orders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1OrderState"
+          }
+        }
+      },
+      "description": "Список активных торговых поручений."
+    },
+    "v1MoneyValue": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "type": "string",
+          "title": "строковый ISO-код валюты"
+        },
+        "units": {
+          "type": "string",
+          "format": "int64",
+          "title": "целая часть суммы, может быть отрицательным числом"
+        },
+        "nano": {
+          "type": "integer",
+          "format": "int32",
+          "title": "дробная часть суммы, может быть отрицательным числом"
+        }
+      },
+      "title": "Денежная сумма в определенной валюте"
+    },
+    "v1OpenSandboxAccountResponse": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string"
+        }
+      },
+      "description": "Номер открытого счёта в песочнице."
+    },
+    "v1Operation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "parentOperationId": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "payment": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "price": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "state": {
+          "$ref": "#/definitions/v1OperationState"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64"
+        },
+        "quantityRest": {
+          "type": "string",
+          "format": "int64"
+        },
+        "figi": {
+          "type": "string"
+        },
+        "instrumentType": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "type": {
+          "type": "string"
+        },
+        "operationType": {
+          "$ref": "#/definitions/v1OperationType"
+        }
+      },
+      "description": "Данные по операции."
+    },
+    "v1OperationState": {
+      "type": "string",
+      "enum": [
+        "OPERATION_STATE_UNSPECIFIED",
+        "OPERATION_STATE_EXECUTED",
+        "OPERATION_STATE_CANCELED"
+      ],
+      "default": "OPERATION_STATE_UNSPECIFIED",
+      "title": "Статус запрашиваемых операций"
+    },
+    "v1OperationType": {
+      "type": "string",
+      "enum": [
+        "OPERATION_TYPE_UNSPECIFIED",
+        "OPERATION_TYPE_INPUT",
+        "OPERATION_TYPE_BOND_TAX",
+        "OPERATION_TYPE_OUTPUT_SECURITIES",
+        "OPERATION_TYPE_OVERNIGHT",
+        "OPERATION_TYPE_TAX",
+        "OPERATION_TYPE_BOND_REPAYMENT_FULL",
+        "OPERATION_TYPE_SELL_CARD",
+        "OPERATION_TYPE_DIVIDEND_TAX",
+        "OPERATION_TYPE_OUTPUT",
+        "OPERATION_TYPE_BOND_REPAYMENT",
+        "OPERATION_TYPE_TAX_CORRECTION",
+        "OPERATION_TYPE_SERVICE_FEE",
+        "OPERATION_TYPE_BENEFIT_TAX",
+        "OPERATION_TYPE_MARGIN_FEE",
+        "OPERATION_TYPE_BUY",
+        "OPERATION_TYPE_BUY_CARD",
+        "OPERATION_TYPE_INPUT_SECURITIES",
+        "OPERATION_TYPE_SELL_MARGIN",
+        "OPERATION_TYPE_BROKER_FEE",
+        "OPERATION_TYPE_BUY_MARGIN",
+        "OPERATION_TYPE_DIVIDEND",
+        "OPERATION_TYPE_SELL",
+        "OPERATION_TYPE_COUPON",
+        "OPERATION_TYPE_SUCCESS_FEE",
+        "OPERATION_TYPE_DIVIDEND_TRANSFER",
+        "OPERATION_TYPE_ACCRUING_VARMARGIN",
+        "OPERATION_TYPE_WRITING_OFF_VARMARGIN",
+        "OPERATION_TYPE_DELIVERY_BUY",
+        "OPERATION_TYPE_DELIVERY_SELL",
+        "OPERATION_TYPE_TRACK_MFEE",
+        "OPERATION_TYPE_TRACK_PFEE",
+        "OPERATION_TYPE_TAX_PROGRESSIVE",
+        "OPERATION_TYPE_BOND_TAX_PROGRESSIVE",
+        "OPERATION_TYPE_DIVIDEND_TAX_PROGRESSIVE",
+        "OPERATION_TYPE_BENEFIT_TAX_PROGRESSIVE",
+        "OPERATION_TYPE_TAX_CORRECTION_PROGRESSIVE",
+        "OPERATION_TYPE_TAX_REPO_PROGRESSIVE",
+        "OPERATION_TYPE_TAX_REPO",
+        "OPERATION_TYPE_TAX_REPO_HOLD",
+        "OPERATION_TYPE_TAX_REPO_REFUND",
+        "OPERATION_TYPE_TAX_REPO_HOLD_PROGRESSIVE",
+        "OPERATION_TYPE_TAX_REPO_REFUND_PROGRESSIVE",
+        "OPERATION_TYPE_DIV_EXT"
+      ],
+      "default": "OPERATION_TYPE_UNSPECIFIED",
+      "title": "Тип операции"
+    },
+    "v1OperationsResponse": {
+      "type": "object",
+      "properties": {
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Operation"
+          }
+        }
+      },
+      "description": "Список операций."
+    },
+    "v1OrderDirection": {
+      "type": "string",
+      "enum": [
+        "ORDER_DIRECTION_UNSPECIFIED",
+        "ORDER_DIRECTION_BUY",
+        "ORDER_DIRECTION_SELL"
+      ],
+      "default": "ORDER_DIRECTION_UNSPECIFIED",
+      "title": "Направление операции"
+    },
+    "v1OrderExecutionReportStatus": {
+      "type": "string",
+      "enum": [
+        "EXECUTION_REPORT_STATUS_UNSPECIFIED",
+        "EXECUTION_REPORT_STATUS_FILL",
+        "EXECUTION_REPORT_STATUS_REJECTED",
+        "EXECUTION_REPORT_STATUS_CANCELLED",
+        "EXECUTION_REPORT_STATUS_NEW",
+        "EXECUTION_REPORT_STATUS_PARTIALLYFILL"
+      ],
+      "default": "EXECUTION_REPORT_STATUS_UNSPECIFIED",
+      "title": "Текущий статус заявки (поручения)"
+    },
+    "v1OrderStage": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "quantity": {
+          "type": "string",
+          "format": "int64"
+        },
+        "tradeId": {
+          "type": "string"
+        }
+      },
+      "description": "Сделки в рамках торгового поручения."
+    },
+    "v1OrderState": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string"
+        },
+        "executionReportStatus": {
+          "$ref": "#/definitions/v1OrderExecutionReportStatus"
+        },
+        "lotsRequested": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lotsExecuted": {
+          "type": "string",
+          "format": "int64"
+        },
+        "initialOrderPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "executedOrderPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "totalOrderAmount": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "averagePositionPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "initialCommission": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "executedCommission": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "figi": {
+          "type": "string"
+        },
+        "direction": {
+          "$ref": "#/definitions/v1OrderDirection"
+        },
+        "initialSecurityPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1OrderStage"
+          }
+        },
+        "serviceCommission": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "orderType": {
+          "$ref": "#/definitions/v1OrderType"
+        },
+        "orderDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "Информация о торговом поручении."
+    },
+    "v1OrderType": {
+      "type": "string",
+      "enum": [
+        "ORDER_TYPE_UNSPECIFIED",
+        "ORDER_TYPE_LIMIT",
+        "ORDER_TYPE_MARKET"
+      ],
+      "default": "ORDER_TYPE_UNSPECIFIED",
+      "title": "Тип заявки"
+    },
+    "v1PortfolioPosition": {
+      "type": "object",
+      "properties": {
+        "figi": {
+          "type": "string"
+        },
+        "instrumentType": {
+          "type": "string"
+        },
+        "quantity": {
+          "$ref": "#/definitions/v1Quotation"
+        },
+        "averagePositionPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "expectedYield": {
+          "$ref": "#/definitions/v1Quotation"
+        },
+        "currentNkd": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "averagePositionPricePt": {
+          "$ref": "#/definitions/v1Quotation"
+        },
+        "currentPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "averagePositionPriceFifo": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "quantityLots": {
+          "$ref": "#/definitions/v1Quotation"
+        }
+      },
+      "description": "Позиции портфеля."
+    },
+    "v1PortfolioResponse": {
+      "type": "object",
+      "properties": {
+        "totalAmountShares": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "totalAmountBonds": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "totalAmountEtf": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "totalAmountCurrencies": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "totalAmountFutures": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "expectedYield": {
+          "$ref": "#/definitions/v1Quotation"
+        },
+        "positions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PortfolioPosition"
+          }
+        }
+      },
+      "description": "Текущий портфель по счёту."
+    },
+    "v1PositionsFutures": {
+      "type": "object",
+      "properties": {
+        "figi": {
+          "type": "string"
+        },
+        "blocked": {
+          "type": "string",
+          "format": "int64"
+        },
+        "balance": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "description": "Баланс фьючерса."
+    },
+    "v1PositionsResponse": {
+      "type": "object",
+      "properties": {
+        "money": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MoneyValue"
+          }
+        },
+        "blocked": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1MoneyValue"
+          }
+        },
+        "securities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PositionsSecurities"
+          }
+        },
+        "limitsLoadingInProgress": {
+          "type": "boolean"
+        },
+        "futures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1PositionsFutures"
+          }
+        }
+      },
+      "description": "Список позиций по счёту."
+    },
+    "v1PositionsSecurities": {
+      "type": "object",
+      "properties": {
+        "figi": {
+          "type": "string"
+        },
+        "blocked": {
+          "type": "string",
+          "format": "int64"
+        },
+        "balance": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "description": "Баланс позиции ценной бумаги."
+    },
+    "v1PostOrderResponse": {
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string"
+        },
+        "executionReportStatus": {
+          "$ref": "#/definitions/v1OrderExecutionReportStatus"
+        },
+        "lotsRequested": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lotsExecuted": {
+          "type": "string",
+          "format": "int64"
+        },
+        "initialOrderPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "executedOrderPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "totalOrderAmount": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "initialCommission": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "executedCommission": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "aciValue": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "figi": {
+          "type": "string"
+        },
+        "direction": {
+          "$ref": "#/definitions/v1OrderDirection"
+        },
+        "initialSecurityPrice": {
+          "$ref": "#/definitions/v1MoneyValue"
+        },
+        "orderType": {
+          "$ref": "#/definitions/v1OrderType"
+        },
+        "message": {
+          "type": "string"
+        },
+        "initialOrderPricePt": {
+          "$ref": "#/definitions/v1Quotation"
+        }
+      },
+      "description": "Информация о выставлении поручения."
+    },
+    "v1Quotation": {
+      "type": "object",
+      "properties": {
+        "units": {
+          "type": "string",
+          "format": "int64",
+          "title": "целая часть суммы, может быть отрицательным числом"
+        },
+        "nano": {
+          "type": "integer",
+          "format": "int32",
+          "title": "дробная часть суммы, может быть отрицательным числом"
+        }
+      },
+      "title": "Котировка - денежная сумма без указания валюты"
+    },
+    "v1SandboxPayInResponse": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "$ref": "#/definitions/v1MoneyValue"
+        }
+      },
+      "description": "Результат пополнения счёта, текущий баланс."
+    }
+  }
+}
